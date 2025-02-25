@@ -52,3 +52,17 @@ def setup_routes(app):
     def my_bookings():
         bookings = Booking.query.filter_by(user_id=current_user.id).all()
         return jsonify([{"id": b.id, "pickup": b.pickup_location, "dropoff": b.dropoff_location, "fare": b.fare, "status": b.status} for b in bookings])
+
+    @app.route("/chat", methods=["POST"])
+    def chat():
+        data = request.json
+        user_message = data.get("message").lower()
+
+        responses = {
+            "hello": "Hi there! How can I assist you?",
+            "how to book a taxi": "You can book a taxi by entering your pickup and drop-off locations and clicking 'Book Now'.",
+            "thank you": "You're welcome! Have a great day!",
+        }
+
+        bot_response = responses.get(user_message, "Sorry, I didn't understand that.")
+        return jsonify({"response": bot_response})
